@@ -1,69 +1,25 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+/* DARK MODE ROOT */
+body.dark {
+  background-color: #121212;
+  color: white;
 }
 
 /* NAVBAR */
-nav {
-  background: black;
-  padding: 15px;
-  text-align: center;
-  position: sticky;
-  top: 0;
+body.dark nav {
+  background: #222;
 }
 
-nav a {
+/* PRODUCT CARD FIX */
+body.dark .product-card {
+  background: #1e1e1e;
   color: white;
-  margin: 0 10px;
-  text-decoration: none;
 }
 
-/* PRODUCTS GRID */
-.products-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
+/* BUTTON FIX */
+body.dark .btn-cart {
+  background: #2e7d32;
 }
 
-/* CARD */
-.product-card {
-  width: 220px;
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  transition: 0.3s;
-}
-
-.product-card:hover {
-  transform: scale(1.05);
-}
-
-/* IMAGE */
-.product-img {
-  width: 180px;
-  height: 180px;
-  object-fit: contain;
-}
-
-/* BUTTONS */
-.btn-cart {
-  background: green;
-  color: white;
-  padding: 6px 10px;
-  border: none;
-  margin: 5px;
-  cursor: pointer;
-}
-
-.btn-wishlist {
-  background: red;
-  color: white;
-  padding: 6px 10px;
-  border: none;
-  cursor: pointer;
+body.dark .btn-wishlist {
+  background: #c62828;
 }

@@ -1,13 +1,28 @@
 export default function Cart({ cart = [], setCart }) {
 
-  const total = cart.reduce((sum, item) => {
-    const price = Number(
-      (item.price || "0")
-        .toString()
-        .replace("₹", "")
-        .replace(/,/g, "")
-    );
+  // ➖ DECREASE / INCREASE / REMOVE SAFE LOGIC
+  const updateQty = (index, type) => {
+    const updated = [...cart];
 
+    if (type === "dec") {
+      if (updated[index].qty > 1) {
+        updated[index].qty -= 1;
+      }
+    }
+
+    if (type === "inc") {
+      updated[index].qty = (updated[index].qty || 1) + 1;
+    }
+
+    setCart(updated);
+  };
+
+  const removeItem = (index) => {
+    setCart(cart.filter((_, i) => i !== index));
+  };
+
+  const total = cart.reduce((sum, item) => {
+    const price = Number(item.price || 0);
     return sum + price * (item.qty || 1);
   }, 0);
 
@@ -18,60 +33,31 @@ export default function Cart({ cart = [], setCart }) {
       {cart.length === 0 ? (
         <p>Cart is Empty</p>
       ) : (
-        <>
-          {cart.map((item, index) => (
-            <div key={index}>
-              <h3>{item.name}</h3>
-              <p>{item.price || "₹0"}</p>
+        cart.map((item, index) => (
+          <div key={index} className="product-card">
+            <h3>{item.name}</h3>
+            <p>₹{item.price}</p>
 
-              <div style={{ margin: "10px 0" }}>
-                <button
-                  onClick={() => {
-                    const updated = [...cart];
+            <div>
+              <button onClick={() => updateQty(index, "dec")}>-</button>
 
-                    if (updated[index].qty > 1) {
-                      updated[index].qty -= 1;
-                      setCart(updated);
-                    }
-                  }}
-                >
-                  -
-                </button>
+              <span style={{ margin: "0 10px" }}>
+                {item.qty || 1}
+              </span>
 
-                <span style={{ margin: "0 15px", fontWeight: "bold" }}>
-                  {item.qty || 1}
-                </span>
-
-                <button
-                  onClick={() => {
-                    const updated = [...cart];
-                    updated[index].qty = (updated[index].qty || 1) + 1;
-                    setCart(updated);
-                  }}
-                >
-                  +
-                </button>
-              </div>
-
-              <button
-                onClick={() => {
-                  setCart(cart.filter((_, i) => i !== index));
-                }}
-              >
-                Remove
-              </button>
-
-              <hr />
+              <button onClick={() => updateQty(index, "inc")}>+</button>
             </div>
-          ))}
 
-          <h2>Total: ₹{total.toLocaleString()}</h2>
-
-          <button onClick={() => setCart([])}>
-            Clear Cart
-          </button>
-        </>
+            <button onClick={() => removeItem(index)}>
+              Remove
+            </button>
+          </div>
+        ))
       )}
+
+      <h2>Total: ₹{total}</h2>
+
+      <button onClick={() => setCart([])}>Clear Cart</button>
     </div>
   );
 }
