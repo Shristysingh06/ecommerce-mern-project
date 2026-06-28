@@ -1,88 +1,132 @@
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 
 export default function Checkout() {
-  const { cart, setCart } = useContext(ShopContext);
+  const { cart } = useContext(ShopContext);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [message, setMessage] = useState("");
 
-  // 💰 TOTAL CALCULATION
-  const total = cart.reduce((sum, item) => {
-    return sum + item.price * (item.qty || 1);
-  }, 0);
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0
+  );
 
-  // 🛒 ORDER HANDLER
   const handleOrder = () => {
     if (!name || !phone || !address) {
-      setMessage("❌ Please fill all fields");
+      alert("⚠️ Please fill all details");
       return;
     }
 
-    setMessage("🎉 Order Placed Successfully!");
-
-    // clear cart from context
-    setCart([]);
+    alert("🎉 Order Placed Successfully!");
   };
 
   return (
-    <div>
-      <h1>Checkout</h1>
+    <div style={{ padding: "20px" }}>
+      <h1>🧾 Checkout</h1>
 
-      {/* 🛒 ORDER SUMMARY */}
-      <h3>Order Summary</h3>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "20px",
+          marginTop: "20px",
+        }}
+      >
+        {/* LEFT - ORDER SUMMARY */}
+        <div
+          style={{
+            flex: 1,
+            minWidth: "280px",
+            background: "#fff",
+            padding: "15px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h2>🛒 Order Summary</h2>
 
-      {cart.length === 0 ? (
-        <p>No items in cart</p>
-      ) : (
-        cart.map((item, index) => (
-          <div key={index}>
-            <p>
-              {item.name} - {item.qty || 1} x ₹{item.price}
-            </p>
-          </div>
-        ))
-      )}
+          {cart.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <span>
+                {item.name} - {item.qty} x ₹{item.price}
+              </span>
+            </div>
+          ))}
 
-      <h2>💰 Total: ₹{total.toLocaleString()}</h2>
+          <hr />
 
-      <hr />
+          <h3>💰 Total: ₹{total.toLocaleString()}</h3>
+        </div>
 
-      {/* FORM */}
-      <input
-        type="text"
-        placeholder="Enter Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+        {/* RIGHT - FORM */}
+        <div
+          style={{
+            flex: 1,
+            minWidth: "280px",
+            background: "#fff",
+            padding: "15px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h2>📦 Delivery Details</h2>
 
-      <br /><br />
+          <input
+            placeholder="Enter Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={inputStyle}
+          />
 
-      <input
-        type="text"
-        placeholder="Enter Phone"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-      />
+          <input
+            placeholder="Enter Phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            style={inputStyle}
+          />
 
-      <br /><br />
+          <textarea
+            placeholder="Enter Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            style={{ ...inputStyle, height: "80px" }}
+          />
 
-      <input
-        type="text"
-        placeholder="Enter Address"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-      />
-
-      <br /><br />
-
-      <button onClick={handleOrder}>
-        Place Order
-      </button>
-
-      <h3>{message}</h3>
+          <button onClick={handleOrder} style={btnStyle}>
+            🚀 Place Order
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
+
+// INPUT STYLE
+const inputStyle = {
+  width: "100%",
+  padding: "10px",
+  margin: "8px 0",
+  borderRadius: "5px",
+  border: "1px solid #ccc",
+};
+
+// BUTTON STYLE
+const btnStyle = {
+  width: "100%",
+  padding: "12px",
+  marginTop: "10px",
+  background: "black",
+  color: "white",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+};

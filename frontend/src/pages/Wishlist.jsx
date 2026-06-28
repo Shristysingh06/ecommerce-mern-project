@@ -2,48 +2,65 @@ import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 
 export default function Wishlist() {
-  const { wishlist, removeFromWishlist, addToCart } =
+  const { wishlist, addToCart, removeFromWishlist } =
     useContext(ShopContext);
 
-  // 🛒 MOVE TO CART
-  const moveToCart = (item) => {
-    addToCart(item);
-    removeFromWishlist(item.id);
-  };
-
   return (
-    <div>
-      <h1>❤️ Wishlist</h1>
+    <div style={{ padding: "20px" }}>
+      <h1>❤️ My Wishlist</h1>
 
       {wishlist.length === 0 ? (
-        <h3 style={{ textAlign: "center" }}>
-          Wishlist is empty 😢
-        </h3>
+        <p style={{ textAlign: "center" }}>Wishlist is empty 😢</p>
       ) : (
-        wishlist.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "12px",
-              margin: "10px",
-              borderRadius: "10px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            {/* PRODUCT INFO */}
-            <div>
-              <h3>{item.name}</h3>
-              <p>₹{item.price}</p>
-            </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "20px",
+            marginTop: "20px",
+          }}
+        >
+          {wishlist.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                border: "1px solid #ddd",
+                borderRadius: "12px",
+                padding: "15px",
+                textAlign: "center",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              }}
+            >
+              {/* IMAGE */}
+              <img
+                src={item.image}
+                alt={item.name}
+                style={{
+                  width: "100%",
+                  height: "180px",
+                  objectFit: "cover",
+                  borderRadius: "10px",
+                }}
+              />
 
-            {/* ACTION BUTTONS */}
-            <div>
+              {/* NAME */}
+              <h3 style={{ margin: "10px 0" }}>{item.name}</h3>
+
+              {/* PRICE */}
+              <p style={{ fontWeight: "bold" }}>₹{item.price}</p>
+
+              {/* BUTTONS */}
               <button
-                onClick={() => moveToCart(item)}
-                style={{ marginRight: "10px" }}
+                onClick={() => addToCart(item)}
+                style={{
+                  padding: "8px 12px",
+                  margin: "5px",
+                  background: "black",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
               >
                 🛒 Move to Cart
               </button>
@@ -51,18 +68,20 @@ export default function Wishlist() {
               <button
                 onClick={() => removeFromWishlist(item.id)}
                 style={{
+                  padding: "8px 12px",
+                  margin: "5px",
                   background: "red",
                   color: "white",
                   border: "none",
-                  padding: "5px 10px",
                   borderRadius: "5px",
+                  cursor: "pointer",
                 }}
               >
-                Remove ❌
+                ❌ Remove
               </button>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   );

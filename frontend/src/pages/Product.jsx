@@ -9,8 +9,6 @@ import pixel from "../assets/pixel.jpg";
 
 export default function Product() {
   const [search, setSearch] = useState("");
-
-  // ✅ CONTEXT FUNCTIONS (IMPORTANT FIX)
   const { addToCart, addToWishlist } = useContext(ShopContext);
 
   const products = [
@@ -22,45 +20,93 @@ export default function Product() {
   ];
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h1>🛍️ Products</h1>
 
-      {/* SEARCH */}
+      {/* SEARCH BOX */}
       <input
         type="text"
         placeholder="Search products..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        style={{
+          padding: "10px",
+          width: "100%",
+          marginBottom: "20px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+        }}
       />
 
-      <div className="products-container">
+      {/* PRODUCT GRID */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: "20px",
+        }}
+      >
         {products
           .filter((item) =>
             item.name.toLowerCase().includes(search.toLowerCase())
           )
           .map((item) => (
-            <div key={item.id} className="product-card">
+            <div
+              key={item.id}
+              style={{
+                border: "1px solid #eee",
+                borderRadius: "12px",
+                padding: "15px",
+                textAlign: "center",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                transition: "0.3s",
+              }}
+            >
+              {/* IMAGE */}
               <img
                 src={item.image}
                 alt={item.name}
-                className="product-img"
+                style={{
+                  width: "100%",
+                  height: "180px",
+                  objectFit: "cover",
+                  borderRadius: "10px",
+                }}
               />
 
-              <h3>{item.name}</h3>
-              <p>₹{item.price}</p>
+              {/* NAME */}
+              <h3 style={{ margin: "10px 0" }}>{item.name}</h3>
 
-              {/* 🛒 ADD TO CART */}
+              {/* PRICE */}
+              <p style={{ fontWeight: "bold" }}>₹{item.price}</p>
+
+              {/* BUTTONS */}
               <button
-                className="btn-cart"
                 onClick={() => addToCart(item)}
+                style={{
+                  padding: "8px 12px",
+                  margin: "5px",
+                  background: "black",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
               >
                 🛒 Add to Cart
               </button>
 
-              {/* ❤️ ADD TO WISHLIST */}
               <button
-                className="btn-wishlist"
                 onClick={() => addToWishlist(item)}
+                style={{
+                  padding: "8px 12px",
+                  margin: "5px",
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
               >
                 ❤️ Wishlist
               </button>
