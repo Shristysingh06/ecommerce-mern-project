@@ -1,8 +1,9 @@
-export default function Wishlist({
-  wishlist = [],
-  setWishlist,
-  setCart,
-}) {
+import { useContext } from "react";
+import { ShopContext } from "../context/ShopContext";
+
+export default function Wishlist() {
+  const { wishlist, setWishlist, setCart } = useContext(ShopContext);
+
   // 🛒 MOVE TO CART
   const moveToCart = (item) => {
     setCart((prev) => {
@@ -19,14 +20,13 @@ export default function Wishlist({
       return [...prev, { ...item, qty: 1 }];
     });
 
-    // remove from wishlist
     setWishlist((prev) =>
       prev.filter((p) => p.name !== item.name)
     );
   };
 
   // ❌ REMOVE FROM WISHLIST
-  const removeFromWishlist = (item) => {
+  const removeItem = (item) => {
     setWishlist((prev) =>
       prev.filter((p) => p.name !== item.name)
     );
@@ -34,30 +34,49 @@ export default function Wishlist({
 
   return (
     <div>
-      <h1>Wishlist ❤️</h1>
+      <h1>❤️ Wishlist</h1>
 
       {wishlist.length === 0 ? (
-        <p>Wishlist is Empty</p>
+        <p>Wishlist is empty 😢</p>
       ) : (
         wishlist.map((item, index) => (
-          <div key={index}>
-            <h3>{item.name}</h3>
-            <p>{item.price}</p>
+          <div
+            key={index}
+            style={{
+              border: "1px solid #ddd",
+              padding: "12px",
+              margin: "10px",
+              borderRadius: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            {/* PRODUCT INFO */}
+            <div>
+              <h3>{item.name}</h3>
+              <p>₹{item.price}</p>
+            </div>
 
-            {/* MOVE TO CART */}
-            <button onClick={() => moveToCart(item)}>
-              Move to Cart 🛒
-            </button>
+            {/* ACTION BUTTONS */}
+            <div>
+              <button
+                onClick={() => moveToCart(item)}
+                style={{ marginRight: "10px" }}
+              >
+                🛒 Move to Cart
+              </button>
 
-            {/* REMOVE */}
-            <button
-              onClick={() => removeFromWishlist(item)}
-              style={{ marginLeft: "10px" }}
-            >
-              Remove ❌
-            </button>
-
-            <hr />
+              <button
+                onClick={() => removeItem(item)}
+                style={{
+                  background: "red",
+                  color: "white",
+                }}
+              >
+                Remove ❌
+              </button>
+            </div>
           </div>
         ))
       )}

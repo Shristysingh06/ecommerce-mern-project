@@ -1,6 +1,10 @@
-export default function Cart({ cart = [], setCart }) {
+import { useContext } from "react";
+import { ShopContext } from "../context/ShopContext";
 
-  // ➖ DECREASE / INCREASE / REMOVE SAFE LOGIC
+export default function Cart() {
+  const { cart, setCart } = useContext(ShopContext);
+
+  // ➕ / ➖ QUANTITY UPDATE
   const updateQty = (index, type) => {
     const updated = [...cart];
 
@@ -17,47 +21,75 @@ export default function Cart({ cart = [], setCart }) {
     setCart(updated);
   };
 
+  // ❌ REMOVE ITEM
   const removeItem = (index) => {
     setCart(cart.filter((_, i) => i !== index));
   };
 
+  // 💰 TOTAL CALCULATION (SAFE)
   const total = cart.reduce((sum, item) => {
-    const price = Number(item.price || 0);
-    return sum + price * (item.qty || 1);
+    return sum + Number(item.price) * (item.qty || 1);
   }, 0);
 
   return (
     <div>
-      <h1>Cart</h1>
+      <h1>🛒 My Cart</h1>
 
       {cart.length === 0 ? (
-        <p>Cart is Empty</p>
+        <p>Cart is Empty 😢</p>
       ) : (
         cart.map((item, index) => (
-          <div key={index} className="product-card">
-            <h3>{item.name}</h3>
-            <p>₹{item.price}</p>
-
+          <div
+            key={index}
+            style={{
+              border: "1px solid #ddd",
+              padding: "12px",
+              margin: "10px",
+              borderRadius: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            {/* PRODUCT INFO */}
             <div>
-              <button onClick={() => updateQty(index, "dec")}>-</button>
+              <h3>{item.name}</h3>
+              <p>₹{item.price}</p>
 
-              <span style={{ margin: "0 10px" }}>
-                {item.qty || 1}
-              </span>
+              {/* QUANTITY */}
+              <div>
+                <button onClick={() => updateQty(index, "dec")}>-</button>
 
-              <button onClick={() => updateQty(index, "inc")}>+</button>
+                <span style={{ margin: "0 10px", fontWeight: "bold" }}>
+                  {item.qty || 1}
+                </span>
+
+                <button onClick={() => updateQty(index, "inc")}>+</button>
+              </div>
             </div>
 
-            <button onClick={() => removeItem(index)}>
-              Remove
+            {/* REMOVE BUTTON */}
+            <button
+              onClick={() => removeItem(index)}
+              style={{
+                background: "red",
+                color: "white",
+                border: "none",
+                padding: "6px 10px",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Remove ❌
             </button>
           </div>
         ))
       )}
 
-      <h2>Total: ₹{total}</h2>
-
-      <button onClick={() => setCart([])}>Clear Cart</button>
+      {/* TOTAL */}
+      <h2 style={{ marginTop: "20px" }}>
+        💰 Total: ₹{total.toLocaleString()}
+      </h2>
     </div>
   );
 }
