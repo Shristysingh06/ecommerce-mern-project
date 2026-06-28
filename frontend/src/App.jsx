@@ -10,7 +10,8 @@ import ProductDetail from "./pages/ProductDetail";
 function App() {
   return (
     <div>
-      <nav>
+      {/* NAVBAR */}
+      <nav style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
         <Link to="/">Home</Link> |{" "}
         <Link to="/products">Products</Link> |{" "}
         <Link to="/cart">Cart</Link> |{" "}
@@ -18,6 +19,7 @@ function App() {
         <Link to="/checkout">Checkout</Link>
       </nav>
 
+      {/* ROUTES */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Product />} />

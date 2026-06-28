@@ -2,34 +2,13 @@ import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 
 export default function Wishlist() {
-  const { wishlist, setWishlist, setCart } = useContext(ShopContext);
+  const { wishlist, removeFromWishlist, addToCart } =
+    useContext(ShopContext);
 
   // 🛒 MOVE TO CART
   const moveToCart = (item) => {
-    setCart((prev) => {
-      const exists = prev.find((p) => p.name === item.name);
-
-      if (exists) {
-        return prev.map((p) =>
-          p.name === item.name
-            ? { ...p, qty: (p.qty || 1) + 1 }
-            : p
-        );
-      }
-
-      return [...prev, { ...item, qty: 1 }];
-    });
-
-    setWishlist((prev) =>
-      prev.filter((p) => p.name !== item.name)
-    );
-  };
-
-  // ❌ REMOVE FROM WISHLIST
-  const removeItem = (item) => {
-    setWishlist((prev) =>
-      prev.filter((p) => p.name !== item.name)
-    );
+    addToCart(item);
+    removeFromWishlist(item.id);
   };
 
   return (
@@ -37,11 +16,13 @@ export default function Wishlist() {
       <h1>❤️ Wishlist</h1>
 
       {wishlist.length === 0 ? (
-        <p>Wishlist is empty 😢</p>
+        <h3 style={{ textAlign: "center" }}>
+          Wishlist is empty 😢
+        </h3>
       ) : (
-        wishlist.map((item, index) => (
+        wishlist.map((item) => (
           <div
-            key={index}
+            key={item.id}
             style={{
               border: "1px solid #ddd",
               padding: "12px",
@@ -68,10 +49,13 @@ export default function Wishlist() {
               </button>
 
               <button
-                onClick={() => removeItem(item)}
+                onClick={() => removeFromWishlist(item.id)}
                 style={{
                   background: "red",
                   color: "white",
+                  border: "none",
+                  padding: "5px 10px",
+                  borderRadius: "5px",
                 }}
               >
                 Remove ❌
