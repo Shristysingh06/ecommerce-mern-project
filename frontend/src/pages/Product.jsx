@@ -19,11 +19,15 @@ export default function Product() {
     { id: 5, name: "Google Pixel 10", price: 84999, image: pixel },
   ];
 
+  const filteredProducts = products.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>🛍️ Products</h1>
 
-      {/* SEARCH BOX */}
+      {/* SEARCH */}
       <input
         type="text"
         placeholder="Search products..."
@@ -38,7 +42,7 @@ export default function Product() {
         }}
       />
 
-      {/* PRODUCT GRID */}
+      {/* GRID */}
       <div
         style={{
           display: "grid",
@@ -46,11 +50,10 @@ export default function Product() {
           gap: "20px",
         }}
       >
-        {products
-          .filter((item) =>
-            item.name.toLowerCase().includes(search.toLowerCase())
-          )
-          .map((item) => (
+        {filteredProducts.length === 0 ? (
+          <p>No products found 😢</p>
+        ) : (
+          filteredProducts.map((item) => (
             <div
               key={item.id}
               style={{
@@ -101,7 +104,7 @@ export default function Product() {
                 style={{
                   padding: "8px 12px",
                   margin: "5px",
-                  background: "red",
+                  background: "crimson",
                   color: "white",
                   border: "none",
                   borderRadius: "5px",
@@ -111,7 +114,8 @@ export default function Product() {
                 ❤️ Wishlist
               </button>
             </div>
-          ))}
+          ))
+        )}
       </div>
     </div>
   );

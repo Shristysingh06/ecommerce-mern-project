@@ -2,52 +2,78 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 
-const Navbar = () => {
-  const { cart, wishlist } = useContext(ShopContext);
+export default function Navbar() {
+  const { cart, wishlist, darkMode, setDarkMode } =
+    useContext(ShopContext);
 
   return (
     <nav
       style={{
         padding: "12px 20px",
-        background: "#111",
+        background: darkMode ? "#111" : "#000",
         color: "white",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+        flexWrap: "wrap",
+        gap: "10px",
       }}
     >
       {/* LOGO */}
       <h2 style={{ margin: 0 }}>🛍️ My Shop</h2>
 
       {/* LINKS */}
-      <div style={{ display: "flex", gap: "15px" }}>
-        <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-          Home
+      <div
+        style={{
+          display: "flex",
+          gap: "15px",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
+        <Link style={linkStyle} to="/">
+          🏠 Home
         </Link>
 
-        <Link
-          to="/products"
-          style={{ color: "white", textDecoration: "none" }}
-        >
-          Products
+        <Link style={linkStyle} to="/products">
+          📱 Products
         </Link>
 
-        <Link
-          to="/cart"
-          style={{ color: "white", textDecoration: "none" }}
-        >
+        <Link style={linkStyle} to="/cart">
           🛒 Cart ({cart.length})
         </Link>
 
-        <Link
-          to="/wishlist"
-          style={{ color: "white", textDecoration: "none" }}
-        >
+        <Link style={linkStyle} to="/wishlist">
           ❤️ Wishlist ({wishlist.length})
         </Link>
+
+        {/* ✅ CHECKOUT LINK */}
+        <Link style={linkStyle} to="/checkout">
+          🧾 Checkout
+        </Link>
       </div>
+
+      {/* DARK MODE */}
+      <button
+        onClick={() => setDarkMode(!darkMode)}
+        style={{
+          padding: "8px 14px",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+          background: darkMode ? "#fff" : "#333",
+          color: darkMode ? "#000" : "#fff",
+          fontWeight: "bold",
+        }}
+      >
+        {darkMode ? "☀️ Light" : "🌙 Dark"}
+      </button>
     </nav>
   );
-};
+}
 
-export default Navbar;
+const linkStyle = {
+  color: "white",
+  textDecoration: "none",
+  fontWeight: "bold",
+};
