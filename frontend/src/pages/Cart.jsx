@@ -2,16 +2,11 @@ import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 
 export default function Admin() {
-  const { cart, removeFromCart } = useContext(ShopContext);
+  const { cart, removeFromCart, increaseQty, decreaseQty } =
+    useContext(ShopContext);
 
   return (
-    <div
-      style={{
-        padding: "20px",
-        minHeight: "100vh",
-        background: "#f3f3f3",
-      }}
-    >
+    <div style={{ padding: "20px", minHeight: "100vh", background: "#f3f3f3" }}>
       <h1>🛠️ Admin Panel</h1>
 
       <h2>🛒 Cart Items ({cart.length})</h2>
@@ -36,7 +31,15 @@ export default function Admin() {
             <div>
               <h3>{item.name}</h3>
               <p>₹{item.price}</p>
-              <p>Qty: {item.qty}</p>
+
+              {/* ✅ QUANTITY CONTROLS */}
+              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                <button onClick={() => decreaseQty(item.id)}>-</button>
+
+                <p>Qty: {item.qty}</p>
+
+                <button onClick={() => increaseQty(item.id)}>+</button>
+              </div>
             </div>
 
             <button

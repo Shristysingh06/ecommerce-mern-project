@@ -1,33 +1,37 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Checkout() {
-  const { cart, setCart } = useContext(ShopContext);
+  const { cart, setCart, addOrder, darkMode } = useContext(ShopContext);
+  const navigate = useNavigate();
 
-  const [showPopup, setShowPopup] = useState(false);
+  // 💰 TOTAL PRICE
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * (item.qty || 1),
+    0
+  );
 
-  // TOTAL CALCULATION
-  const total = cart.reduce((sum, item) => {
-    return sum + item.price * (item.qty || 1);
-  }, 0);
-
-  // PLACE ORDER
+  // 📦 PLACE ORDER
   const handleOrder = () => {
-    if (cart.length === 0) return;
+    if (cart.length === 0) {
+      alert("Cart is empty!");
+      return;
+    }
 
-    const oldOrders = JSON.parse(localStorage.getItem("orders")) || [];
-
-    const newOrder = {
+    const order = {
       id: Date.now(),
       items: cart,
-      total: total,
+      total,
       date: new Date().toLocaleString(),
     };
 
-    localStorage.setItem("orders", JSON.stringify([...oldOrders, newOrder]));
-
+    addOrder(order);
     setCart([]); // clear cart
-    setShowPopup(true);
+
+    alert("Order Placed Successfully 🎉");
+
+    navigate("/orders");
   };
 
   return (
@@ -35,92 +39,46 @@ export default function Checkout() {
       <h1>🧾 Checkout</h1>
 
       {/* CART ITEMS */}
-      {cart.length === 0 ? (
-        <p>🛒 Cart is empty</p>
-      ) : (
-        cart.map((item) => (
+      <div>
+        {cart.map((item) => (
           <div
             key={item.id}
             style={{
-              border: "1px solid #ccc",
+              display: "flex",
+              justifyContent: "space-between",
               padding: "10px",
               marginBottom: "10px",
-              borderRadius: "8px",
+              borderRadius: "10px",
+              background: darkMode ? "#1e1e1e" : "#fff",
+              boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
             }}
           >
-            <h3>{item.name}</h3>
+            <p>{item.name}</p>
             <p>
-              {item.qty || 1} × ₹{item.price}
+              ₹{item.price} × {item.qty || 1}
             </p>
           </div>
-        ))
-      )}
+        ))}
+      </div>
 
       {/* TOTAL */}
       <h2>💰 Total: ₹{total}</h2>
 
-      {/* PLACE ORDER BUTTON */}
-      {cart.length > 0 && (
-        <button
-          onClick={handleOrder}
-          style={{
-            padding: "10px 20px",
-            background: "green",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-            borderRadius: "6px",
-          }}
-        >
-          🧾 Place Order
-        </button>
-      )}
-
-      {/* POPUP */}
-      {showPopup && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0,0,0,0.6)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              padding: "30px",
-              borderRadius: "10px",
-              textAlign: "center",
-              width: "300px",
-            }}
-          >
-            <h2>🎉 Order Successful!</h2>
-            <p>Your order has been placed.</p>
-            <p>Thank you 🛍️</p>
-
-            <button
-              onClick={() => setShowPopup(false)}
-              style={{
-                marginTop: "10px",
-                padding: "8px 15px",
-                background: "black",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: "5px",
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {/* BUTTON */}
+      <button
+        onClick={handleOrder}
+        style={{
+          padding: "12px 20px",
+          background: "#28a745",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}
+      >
+        Place Order
+      </button>
     </div>
   );
 }

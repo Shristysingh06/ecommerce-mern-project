@@ -1,12 +1,57 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const ShopContext = createContext();
 
 export const ShopProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
+  // 🛒 CART (persistent)
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // ❤️ WISHLIST
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem("wishlist");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // 🌙 DARK MODE
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+
+  // 📦 ORDERS
   const [orders, setOrders] = useState([]);
+
+  // 👤 USER LOGIN STATE
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("user");
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  // 💾 SAVE CART
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  // 💾 SAVE WISHLIST
+  useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  // 💾 SAVE THEME
+  useEffect(() => {
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  // 💾 SAVE USER
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
 
   // 🛒 ADD TO CART
   const addToCart = (product) => {
@@ -25,22 +70,27 @@ export const ShopProvider = ({ children }) => {
     });
   };
 
-  // ➕➖ UPDATE QTY
-  const updateQty = (id, type) => {
+  // ➕ INCREASE QTY
+  const increaseQty = (id) => {
     setCart((prev) =>
       prev.map((item) =>
         item.id === id
-          ? {
-              ...item,
-              qty:
-                type === "inc"
-                  ? (item.qty || 1) + 1
-                  : item.qty > 1
-                  ? item.qty - 1
-                  : 1,
-            }
+          ? { ...item, qty: (item.qty || 1) + 1 }
           : item
       )
+    );
+  };
+
+  // ➖ DECREASE QTY
+  const decreaseQty = (id) => {
+    setCart((prev) =>
+      prev
+        .map((item) =>
+          item.id === id
+            ? { ...item, qty: (item.qty || 1) - 1 }
+            : item
+        )
+        .filter((item) => item.qty > 0)
     );
   };
 
@@ -63,9 +113,30 @@ export const ShopProvider = ({ children }) => {
     setWishlist((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // 📦 ADD ORDER (for checkout)
+  // 🌙 TOGGLE THEME
+  const toggleTheme = () => {
+    setDarkMode((prev) => !prev);
+  };
+
+  // 📦 ADD ORDER
   const addOrder = (order) => {
     setOrders((prev) => [...prev, order]);
+  };
+
+  // 🔐 LOGIN (demo / frontend only)
+  const login = (email, password) => {
+    const fakeUser = {
+      id: Date.now(),
+      name: "User",
+      email,
+    };
+
+    setUser(fakeUser);
+  };
+
+  // 🚪 LOGOUT
+  const logout = () => {
+    setUser(null);
   };
 
   return (
@@ -73,23 +144,36 @@ export const ShopProvider = ({ children }) => {
       value={{
         // states
         cart,
-        setCart, // ✅ IMPORTANT (checkout clear cart)
         wishlist,
         darkMode,
-        setDarkMode,
         orders,
+        user,
 
-        // cart functions
+        // setters
+        setCart,
+        setWishlist,
+        setDarkMode,
+        setUser,
+
+        // cart
         addToCart,
-        updateQty,
+        increaseQty,
+        decreaseQty,
         removeFromCart,
 
         // wishlist
         addToWishlist,
         removeFromWishlist,
 
+        // theme
+        toggleTheme,
+
         // orders
         addOrder,
+
+        // auth
+        login,
+        logout,
       }}
     >
       {children}

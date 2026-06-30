@@ -1,59 +1,100 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 
 export default function Navbar() {
-  const { cart, wishlist, darkMode, setDarkMode } =
-    useContext(ShopContext);
+  const {
+    cart,
+    wishlist,
+    darkMode,
+    setDarkMode,
+    user,
+    logout,
+  } = useContext(ShopContext);
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav
-      style={{
-        padding: "12px 20px",
-        background: darkMode ? "#111" : "#000",
-        color: "white",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "10px",
-      }}
-    >
+    <nav style={styles.nav(darkMode)}>
+
       {/* LOGO */}
       <h2 style={{ margin: 0 }}>🛍️ My Shop</h2>
 
-      {/* LINKS */}
-      <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
-        <Link style={linkStyle} to="/">🏠 Home</Link>
-        <Link style={linkStyle} to="/products">📱 Products</Link>
-        <Link style={linkStyle} to="/cart">🛒 Cart ({cart.length})</Link>
-        <Link style={linkStyle} to="/wishlist">❤️ Wishlist ({wishlist.length})</Link>
-        <Link style={linkStyle} to="/checkout">🧾 Checkout</Link>
-        <Link style={linkStyle} to="/orders">📦 Orders</Link>
-        <Link style={linkStyle} to="/admin">🧑‍💼 Admin</Link>
+      {/* ☰ MOBILE BUTTON */}
+      <div
+        style={styles.hamburger}
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        ☰
       </div>
 
-      {/* DARK MODE */}
-      <button
-        onClick={() => setDarkMode(!darkMode)}
+      {/* LINKS */}
+      <div
         style={{
-          padding: "8px 14px",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-          background: darkMode ? "white" : "#333",
-          color: darkMode ? "black" : "white",
-          fontWeight: "bold",
+          ...styles.links,
+          transform: menuOpen ? "translateX(0)" : "translateX(100%)",
         }}
       >
-        {darkMode ? "☀️ Light" : "🌙 Dark"}
-      </button>
+        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+        <Link to="/products" onClick={() => setMenuOpen(false)}>Products</Link>
+
+        <Link to="/cart" onClick={() => setMenuOpen(false)}>
+          Cart ({cart.length})
+        </Link>
+
+        <Link to="/wishlist" onClick={() => setMenuOpen(false)}>
+          Wishlist ({wishlist.length})
+        </Link>
+
+        <Link to="/checkout" onClick={() => setMenuOpen(false)}>Checkout</Link>
+        <Link to="/orders" onClick={() => setMenuOpen(false)}>Orders</Link>
+        <Link to="/admin" onClick={() => setMenuOpen(false)}>Admin</Link>
+
+        {/* AUTH */}
+        {user ? (
+          <>
+            <span>👤 {user.email}</span>
+            <button onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <Link to="/login" onClick={() => setMenuOpen(false)}>
+            Login
+          </Link>
+        )}
+
+        {/* DARK MODE */}
+        <button onClick={() => setDarkMode(!darkMode)}>
+          {darkMode ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </div>
     </nav>
   );
 }
 
-const linkStyle = {
-  color: "white",
-  textDecoration: "none",
-  fontWeight: "bold",
+/* 🎨 STYLES */
+const styles = {
+  nav: (darkMode) => ({
+    padding: "12px 20px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    background: darkMode ? "#111" : "#fff",
+    color: darkMode ? "white" : "black",
+    position: "sticky",
+    top: 0,
+    zIndex: 1000,
+  }),
+
+  hamburger: {
+    fontSize: "26px",
+    cursor: "pointer",
+    display: "none",
+  },
+
+  links: {
+    display: "flex",
+    gap: "15px",
+    alignItems: "center",
+    transition: "0.3s",
+  },
 };
