@@ -23,34 +23,14 @@ export default function Navbar() {
       <h2 style={{ margin: 0 }}>🛍️ My Shop</h2>
 
       {/* LINKS */}
-      <div
-        style={{
-          display: "flex",
-          gap: "15px",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        <Link style={linkStyle} to="/">
-          🏠 Home
-        </Link>
-
-        <Link style={linkStyle} to="/products">
-          📱 Products
-        </Link>
-
-        <Link style={linkStyle} to="/cart">
-          🛒 Cart ({cart.length})
-        </Link>
-
-        <Link style={linkStyle} to="/wishlist">
-          ❤️ Wishlist ({wishlist.length})
-        </Link>
-
-        {/* ✅ CHECKOUT LINK */}
-        <Link style={linkStyle} to="/checkout">
-          🧾 Checkout
-        </Link>
+      <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
+        <Link style={linkStyle} to="/">🏠 Home</Link>
+        <Link style={linkStyle} to="/products">📱 Products</Link>
+        <Link style={linkStyle} to="/cart">🛒 Cart ({cart.length})</Link>
+        <Link style={linkStyle} to="/wishlist">❤️ Wishlist ({wishlist.length})</Link>
+        <Link style={linkStyle} to="/checkout">🧾 Checkout</Link>
+        <Link style={linkStyle} to="/orders">📦 Orders</Link>
+        <Link style={linkStyle} to="/admin">🧑‍💼 Admin</Link>
       </div>
 
       {/* DARK MODE */}
@@ -61,8 +41,8 @@ export default function Navbar() {
           border: "none",
           borderRadius: "6px",
           cursor: "pointer",
-          background: darkMode ? "#fff" : "#333",
-          color: darkMode ? "#000" : "#fff",
+          background: darkMode ? "white" : "#333",
+          color: darkMode ? "black" : "white",
           fontWeight: "bold",
         }}
       >

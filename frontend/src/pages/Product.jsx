@@ -19,6 +19,7 @@ export default function Product() {
     { id: 5, name: "Google Pixel 10", price: 84999, image: pixel },
   ];
 
+  // FILTERED DATA
   const filteredProducts = products.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -42,18 +43,18 @@ export default function Product() {
         }}
       />
 
-      {/* GRID */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {filteredProducts.length === 0 ? (
-          <p>No products found 😢</p>
-        ) : (
-          filteredProducts.map((item) => (
+      {/* EMPTY CHECK */}
+      {filteredProducts.length === 0 ? (
+        <p>No products found 😢</p>
+      ) : (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {filteredProducts.map((item) => (
             <div
               key={item.id}
               style={{
@@ -62,7 +63,6 @@ export default function Product() {
                 padding: "15px",
                 textAlign: "center",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                transition: "0.3s",
               }}
             >
               {/* IMAGE */}
@@ -78,7 +78,7 @@ export default function Product() {
               />
 
               {/* NAME */}
-              <h3 style={{ margin: "10px 0" }}>{item.name}</h3>
+              <h3>{item.name}</h3>
 
               {/* PRICE */}
               <p style={{ fontWeight: "bold" }}>₹{item.price}</p>
@@ -114,9 +114,9 @@ export default function Product() {
                 ❤️ Wishlist
               </button>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
